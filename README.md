@@ -18,7 +18,7 @@ See test code.
 * [ ] blockCode
 * [x] big
 * [x] bold
-* [ ] small
+* [x] small
 * [x] italic
 * [ ] strike
 * [ ] motion
