@@ -9,7 +9,7 @@ See test code.
 
 ## Todo
 ### Parser Design
-* [ ] Use Parsimmon (just an idea, not necessarily worked on)
+* [ ] Use Parsimmon (just an idea, will not necessarily be worked on)
 
 ### Language
 #### Block elements
