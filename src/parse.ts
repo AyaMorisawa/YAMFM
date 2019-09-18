@@ -10,10 +10,13 @@ type BigNode = { type: 'big', children: Node[] };
 
 type BoldNode = { type: 'bold', children: Node[] };
 
+type ItalicNode = { type: 'italic', children: Node[] };
+
 type GroupNode
   = JumpNode
   | BigNode
-  | BoldNode;
+  | BoldNode
+  | ItalicNode;
 
 type Node
   = RootNode
@@ -32,6 +35,7 @@ const groups: Group[] = [
   { type: 'jump', opening: '<jump>', closing: '</jump>' },
   { type: 'big', opening: '***', closing: '***' },
   { type: 'bold', opening: '**', closing: '**' },
+  { type: 'italic', opening: '*', closing: '*' },
 ];
 
 export function parse(source: string): RootNode {
