@@ -62,6 +62,12 @@ describe('parse', () => {
     });
   });
 
+  it('flip', () => {
+    assert.deepStrictEqual(parse('<flip>aa</flip>'), {
+      type: 'root', children: [{ type: 'flip', children: [{ type: 'text', text: 'aa' }] }]
+    });
+  });
+
   it('nested', () => {
     assert.deepStrictEqual(parse('aa<jump>bb<jump>cc</jump>dd</jump>ee'), {
       type: 'root', children: [

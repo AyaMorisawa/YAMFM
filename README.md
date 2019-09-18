@@ -31,7 +31,7 @@ See test code.
   * [x] `<motion>`
 * [ ] spin
 * [x] jump
-* [ ] flip
+* [x] flip
 * [ ] center
 * [ ] inlineCode
 * [ ] blockMath
