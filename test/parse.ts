@@ -18,7 +18,7 @@ describe('parse', () => {
     assert.deepStrictEqual(parse('<jump>aa</jump>'), {
       type: 'root', children: [{ type: 'jump', children: [{ type: 'text', text: 'aa' }] }]
     });
-  })
+  });
 
   it('nested', () => {
     assert.deepStrictEqual(parse('aa<jump>bb<jump>cc</jump>dd</jump>ee'), {
