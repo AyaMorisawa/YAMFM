@@ -6,7 +6,11 @@ type TextNode = { type: 'text', text: string };
 
 type JumpNode = { type: 'jump', children: Node[] };
 
-type GroupNode = JumpNode;
+type BoldNode = { type: 'bold', children: Node[] };
+
+type GroupNode
+  = JumpNode
+  | BoldNode;
 
 type Node
   = RootNode
@@ -23,6 +27,7 @@ type Group = {
 
 const groups: Group[] = [
   { type: 'jump', opening: '<jump>', closing: '</jump>' },
+  { type: 'bold', opening: '**', closing: '**' },
 ];
 
 export function parse(source: string): RootNode {
