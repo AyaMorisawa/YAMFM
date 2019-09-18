@@ -17,11 +17,18 @@ See test code.
 * [ ] search
 * [ ] blockCode
 * [x] big
-* [x] bold
+* [ ] bold
+  * [x] `**`
+  * [ ] `__`
 * [x] small
-* [x] italic
+* [ ] italic
+  * [x] `*`
+  * [ ] `_`
+  * [ ] `<i>`
 * [ ] strike
 * [ ] motion
+  * [ ] `(((`
+  * [ ] `<motion>`
 * [ ] spin
 * [x] jump
 * [ ] flip
