@@ -6,10 +6,13 @@ type TextNode = { type: 'text', text: string };
 
 type JumpNode = { type: 'jump', children: Node[] };
 
+type BigNode = { type: 'big', children: Node[] };
+
 type BoldNode = { type: 'bold', children: Node[] };
 
 type GroupNode
   = JumpNode
+  | BigNode
   | BoldNode;
 
 type Node
@@ -27,6 +30,7 @@ type Group = {
 
 const groups: Group[] = [
   { type: 'jump', opening: '<jump>', closing: '</jump>' },
+  { type: 'big', opening: '***', closing: '***' },
   { type: 'bold', opening: '**', closing: '**' },
 ];
 
