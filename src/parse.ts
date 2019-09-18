@@ -22,7 +22,7 @@ type Group = {
 };
 
 const groups: Group[] = [
-  { type: 'jump', opening: '<jump>', closing: '</jump>' }
+  { type: 'jump', opening: '<jump>', closing: '</jump>' },
 ];
 
 export function parse(source: string): RootNode {
