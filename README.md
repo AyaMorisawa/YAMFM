@@ -9,13 +9,18 @@ See test code.
 
 ## Todo
 ### Parser Design
-* [ ] Use Parsimmon
+* [ ] Use Parsimmon (just an idea, not necessarily worked on)
 
 ### Language
+#### Block elements
 * [ ] title
 * [ ] quote
 * [ ] search
 * [ ] blockCode
+* [ ] blockMath
+* [ ] center
+
+#### Inline elements
 * [x] big
 * [ ] bold
   * [x] `**`
@@ -32,9 +37,7 @@ See test code.
 * [ ] spin
 * [x] jump
 * [x] flip
-* [ ] center
 * [ ] inlineCode
-* [ ] blockMath
 * [ ] inlineMath
 * [ ] mention
 * [ ] hashtag
