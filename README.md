@@ -2,11 +2,11 @@
 Yet another MFM (Misskey Flavored Markdown) implementation.
 
 ## License
-YAMFM is licensed under the (AGPL-3.0)[LICENSE].
+YAMFM is licensed under the [AGPL-3.0](LICENSE).
 
 ## Todo
 ### Design
-* Use Parsimmon
+* [ ] Use Parsimmon
 
 ### Language
 * [ ] title
