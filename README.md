@@ -8,8 +8,8 @@ YAMFM is licensed under the [AGPL-3.0](LICENSE).
 See test code.
 
 ## Todo
-### Parser Design
 * [ ] Use Parsimmon (just an idea, will not necessarily be worked on)
+* [ ] Benchmark
 
 ### Language
 #### Block elements
