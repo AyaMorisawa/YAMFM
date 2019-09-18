@@ -16,13 +16,16 @@ type SmallNode = { type: 'small', children: Node[] };
 
 type MotionNode = { type: 'motion', children: Node[] };
 
+type StrikeNode = { type: 'strike', children: Node[] };
+
 type GroupNode
   = JumpNode
   | BigNode
   | BoldNode
   | ItalicNode
   | SmallNode
-  | MotionNode;
+  | MotionNode
+  | StrikeNode;
 
 type Node
   = RootNode
@@ -45,6 +48,7 @@ const groups: Group[] = [
   { type: 'small', opening: '<small>', closing: '</small>' },
   { type: 'motion', opening: '(((', closing: ')))' },
   { type: 'motion', opening: '<motion>', closing: '</motion>' },
+  { type: 'strike', opening: '~~', closing: '~~' },
 ];
 
 export function parse(source: string): RootNode {

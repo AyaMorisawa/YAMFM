@@ -25,7 +25,7 @@ See test code.
   * [x] `*`
   * [ ] `_`
   * [ ] `<i>`
-* [ ] strike
+* [x] strike
 * [x] motion
   * [x] `(((`
   * [x] `<motion>`
