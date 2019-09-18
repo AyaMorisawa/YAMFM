@@ -32,8 +32,8 @@ describe('parse', () => {
     });
   });
 
-  it('italic', () => {
-    assert.deepStrictEqual(parse('*aa*'), {
+  it('italic xml', () => {
+    assert.deepStrictEqual(parse('<i>aa</i>'), {
       type: 'root', children: [{ type: 'italic', children: [{ type: 'text', text: 'aa' }] }]
     });
   });

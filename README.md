@@ -22,9 +22,9 @@ See test code.
   * [ ] `__`
 * [x] small
 * [ ] italic
-  * [x] `*`
+  * [ ] `*`
   * [ ] `_`
-  * [ ] `<i>`
+  * [x] `<i>`
 * [x] strike
 * [x] motion
   * [x] `(((`

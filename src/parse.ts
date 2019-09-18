@@ -47,7 +47,7 @@ const groups: Group[] = [
   { type: 'jump', opening: '<jump>', closing: '</jump>' },
   { type: 'big', opening: '***', closing: '***' },
   { type: 'bold', opening: '**', closing: '**' },
-  { type: 'italic', opening: '*', closing: '*' },
+  { type: 'italic', opening: '<i>', closing: '</i>' },
   { type: 'small', opening: '<small>', closing: '</small>' },
   { type: 'motion', opening: '(((', closing: ')))' },
   { type: 'motion', opening: '<motion>', closing: '</motion>' },
