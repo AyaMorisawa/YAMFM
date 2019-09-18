@@ -16,10 +16,10 @@ See test code.
 * [ ] quote
 * [ ] search
 * [ ] blockCode
-* [ ] big
-* [ ] bold
+* [x] big
+* [x] bold
 * [ ] small
-* [ ] italic
+* [x] italic
 * [ ] strike
 * [ ] motion
 * [ ] spin
