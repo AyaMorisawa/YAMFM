@@ -14,12 +14,15 @@ type ItalicNode = { type: 'italic', children: Node[] };
 
 type SmallNode = { type: 'small', children: Node[] };
 
+type MotionNode = { type: 'motion', children: Node[] };
+
 type GroupNode
   = JumpNode
   | BigNode
   | BoldNode
   | ItalicNode
-  | SmallNode;
+  | SmallNode
+  | MotionNode;
 
 type Node
   = RootNode
@@ -40,6 +43,8 @@ const groups: Group[] = [
   { type: 'bold', opening: '**', closing: '**' },
   { type: 'italic', opening: '*', closing: '*' },
   { type: 'small', opening: '<small>', closing: '</small>' },
+  { type: 'motion', opening: '(((', closing: ')))' },
+  { type: 'motion', opening: '<motion>', closing: '</motion>' },
 ];
 
 export function parse(source: string): RootNode {

@@ -44,6 +44,19 @@ describe('parse', () => {
     });
   });
 
+  it('motion parens', () => {
+    assert.deepStrictEqual(parse('(((aa)))'), {
+      type: 'root', children: [{ type: 'motion', children: [{ type: 'text', text: 'aa' }] }]
+    });
+  });
+
+  it('motion xml', () => {
+    assert.deepStrictEqual(parse('<motion>aa</motion>'), {
+      type: 'root', children: [{ type: 'motion', children: [{ type: 'text', text: 'aa' }] }]
+    });
+  });
+
+
   it('nested', () => {
     assert.deepStrictEqual(parse('aa<jump>bb<jump>cc</jump>dd</jump>ee'), {
       type: 'root', children: [

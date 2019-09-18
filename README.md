@@ -26,9 +26,9 @@ See test code.
   * [ ] `_`
   * [ ] `<i>`
 * [ ] strike
-* [ ] motion
-  * [ ] `(((`
-  * [ ] `<motion>`
+* [x] motion
+  * [x] `(((`
+  * [x] `<motion>`
 * [ ] spin
 * [x] jump
 * [ ] flip
