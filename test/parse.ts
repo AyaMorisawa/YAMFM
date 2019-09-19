@@ -26,7 +26,7 @@ describe('parse', () => {
     });
   });
 
-  it('bold asterisks', () => {
+  it('bold asterisk', () => {
     assert.deepStrictEqual(parse('**aa**'), {
       type: 'root', children: [{ type: 'bold', children: [{ type: 'text', text: 'aa' }] }]
     });
