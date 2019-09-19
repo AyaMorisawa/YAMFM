@@ -6,42 +6,37 @@ export function parse(source: string): RootNode {
 }
 
 function parseInline(source: string): Node[] {
-  const groupMatchStack = new Stack<{ group: Group, openingMatch?: RegExpMatchArray }>();
+  const groupMatchStack = new Stack<{ group: Group, openingValue?: any }>();
   const resultStack = new Stack<Node[]>();
   resultStack.push([]);
   let needle = 0;
   while (needle < source.length) {
     {
       if (!groupMatchStack.empty()) {
-        const { group, openingMatch } = groupMatchStack.top();
-        if (source.substr(needle, group.closing.length) === group.closing) {
+        const { group, openingValue } = groupMatchStack.top();
+        const res = group.closing({ text: source, offset: needle });
+        if (res.status === 'succeed') {
           groupMatchStack.pop();
           const children = resultStack.pop();
-          const node = group.gen({ type: group.type, children }, { openingMatch });
+          const node = group.gen({ type: group.type, children }, [openingValue, res.value]);
           resultStack.top().push(node);
-          needle += group.closing.length;
+          needle += res.length;
           continue;
         }
       }
     }
     {
-      const { group, length, matched } = (() => {
+      const { group, length, value } = (() => {
         for (const group of language.groups) {
-          if (typeof group.opening === 'string') {
-            if (source.substr(needle, group.opening.length) === group.opening) {
-              return { group, length: group.opening.length, matched: null };
-            }
-          } else {
-            const match = source.substr(needle).match(group.opening);
-            if (match !== null) {
-              return { group, length: match[0].length, matched: match };
-            }
+          const res = group.opening({ text: source, offset: needle });
+          if (res.status === 'succeed') {
+            return { group, length: res.length, value: res.value };
           }
         }
-        return { group: null, length: 0, matched: null };
+        return { group: null, length: 0, value: null };
       })();
       if (group !== null) {
-        groupMatchStack.push({ group, openingMatch: matched });
+        groupMatchStack.push({ group, openingValue: value });
         resultStack.push([]);
         needle += length;
         continue;

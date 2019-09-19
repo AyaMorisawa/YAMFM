@@ -1,3 +1,5 @@
+import { str, Parser, regex } from './parser-combinators';
+
 export type RootNode = { type: 'root', children: Node[] }
 
 export type TextNode = { type: 'text', text: string };
@@ -38,32 +40,32 @@ export type Node
 
 const _groupType = false ? (null as GroupNode).type : null;
 
-export type PartialNode = { type: typeof _groupType, children: Node[] };
+type PartialNode = { type: typeof _groupType, children: Node[] };
 
 export type Group = {
   type: typeof _groupType,
-  opening: string | RegExp,
-  closing: string,
-  gen?: (partialNode: PartialNode, matches: { openingMatch?: RegExpMatchArray, closingMatch?: RegExpMatchArray }) => Node,
+  opening: Parser<any>,
+  closing: Parser<any>,
+  gen?: (partialNode: PartialNode, values: [any, any]) => Node,
 };
 
-function group(type: typeof _groupType, opening: string | RegExp, closing: string, gen?: (partialNode: PartialNode, matches: { openingMatch?: RegExpMatchArray, closingMatch?: RegExpMatchArray }) => Node) {
-  if (typeof gen === 'undefined') gen = (partialNode, matches) => partialNode as Node;
+function group<S, T>(type: typeof _groupType, opening: Parser<S>, closing: Parser<T>, gen?: (partialNode: PartialNode, values: [S, T]) => Node): Group {
+  if (typeof gen === 'undefined') gen = (partialNode, values) => partialNode as Node;
   return { type, opening, closing, gen };
 }
 
 const groups: Group[] = [
-  group('jump', '<jump>', '</jump>'),
-  group('big', '***', '***'),
-  group('bold', '**', '**'),
-  group('italic', '<i>', '</i>'),
-  group('small', '<small>', '</small>'),
-  group('motion', '(((', ')))'),
-  group('motion', '<motion>', '</motion>'),
-  group('strike', '~~', '~~'),
-  group('flip', '<flip>', '</flip>'),
-  group('spin', /^<spin\s?([a-z]*)>/, '</spin>', (partialNode, { openingMatch }) => {
-    return Object.assign({}, partialNode, { attr: openingMatch[1] }) as Node;
+  group('jump', str('<jump>'), str('</jump>')),
+  group('big', str('***'), str('***')),
+  group('bold', str('**'), str('**')),
+  group('italic', str('<i>'), str('</i>')),
+  group('small', str('<small>'), str('</small>')),
+  group('motion', str('((('), str(')))')),
+  group('motion', str('<motion>'), str('</motion>')),
+  group('strike', str('~~'), str('~~')),
+  group('flip', str('<flip>'), str('</flip>')),
+  group('spin', regex(/^<spin\s?([a-z]*)>/), str('</spin>'), (partialNode, [[, attr]]) => {
+    return Object.assign({}, partialNode, { attr }) as Node;
   }),
 ];
 
