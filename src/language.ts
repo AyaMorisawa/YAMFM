@@ -48,6 +48,7 @@ export type Group = {
 };
 
 function group(type: typeof _groupType, opening: string | RegExp, closing: string, gen?: (partialNode: PartialNode, matches: { openingMatch?: RegExpMatchArray, closingMatch?: RegExpMatchArray }) => Node) {
+  if (typeof gen === 'undefined') gen = (partialNode, matches) => partialNode as Node;
   return { type, opening, closing, gen };
 }
 

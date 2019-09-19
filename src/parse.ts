@@ -17,8 +17,7 @@ function parseInline(source: string): Node[] {
         if (source.substr(needle, group.closing.length) === group.closing) {
           groupMatchStack.pop();
           const children = resultStack.pop();
-          const partialNode: PartialNode = { type: group.type, children };
-          const node = typeof group.gen !== 'undefined' ? group.gen(partialNode, { openingMatch }) : partialNode as Node;
+          const node = group.gen({ type: group.type, children }, { openingMatch });
           resultStack.top().push(node);
           needle += group.closing.length;
           continue;
