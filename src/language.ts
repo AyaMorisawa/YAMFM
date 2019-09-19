@@ -37,7 +37,8 @@ export type GroupNode
   | SpinNode;
 
 export type PrimitiveNode
-  = InlineCodeNode;
+  = InlineCodeNode
+  | BoldNode;
 
 export type MfmNode
   = RootNode
@@ -71,5 +72,8 @@ type Primitive = T.Primitive<typeof _primitiveType, MfmNode, any>;
 export const primitives: Primitive[] = [
   T.primitive('inlineCode', P.regex(/^`([^`\n]+?)`/), (partialNode, [, code]) => {
     return Object.assign({}, partialNode, { code });
+  }),
+  T.primitive('bold', P.regex(/^__([a-zA-Z0-9\s]+?)__/), (partialNode, [, text]) => {
+    return Object.assign({}, partialNode, { children: [{ type: 'text', text }] }) as BoldNode;
   }),
 ];

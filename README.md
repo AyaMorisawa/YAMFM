@@ -22,9 +22,9 @@ See test code.
 
 #### Inline elements
 * [x] big
-* [ ] bold
+* [x] bold
   * [x] `**`
-  * [ ] `__`
+  * [x] `__`
 * [x] small
 * [ ] italic
   * [ ] `*`

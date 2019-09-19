@@ -26,8 +26,14 @@ describe('parse', () => {
     });
   });
 
-  it('bold', () => {
+  it('bold asterisks', () => {
     assert.deepStrictEqual(parse('**aa**'), {
+      type: 'root', children: [{ type: 'bold', children: [{ type: 'text', text: 'aa' }] }]
+    });
+  });
+
+  it('bold underscore', () => {
+    assert.deepStrictEqual(parse('__aa__'), {
       type: 'root', children: [{ type: 'bold', children: [{ type: 'text', text: 'aa' }] }]
     });
   });
