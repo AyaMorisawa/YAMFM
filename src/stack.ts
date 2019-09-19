@@ -18,4 +18,8 @@ export class Stack<T> {
   empty(): boolean {
     return this.arr.length === 0;
   }
+
+  toArray(): T[] {
+    return this.arr;
+  }
 }

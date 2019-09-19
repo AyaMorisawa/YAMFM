@@ -7,8 +7,8 @@ export function parse(source: string): L.RootNode {
 
 function parseInline(source: string): L.MfmNode[] {
   const groupValueStack = new Stack<{ group: L.Group, openingValue?: any }>();
-  const resultStack = new Stack<L.MfmNode[]>();
-  resultStack.push([]);
+  const resultStack = new Stack<Stack<L.MfmNode>>();
+  resultStack.push(new Stack());
   let needle = 0;
   while (needle < source.length) {
     {
@@ -17,7 +17,7 @@ function parseInline(source: string): L.MfmNode[] {
         const res = group.closing({ text: source, offset: needle });
         if (res.status === 'succeed') {
           groupValueStack.pop();
-          const children = resultStack.pop();
+          const children = resultStack.pop().toArray();
           const node = group.gen({ type: group.type, children }, [openingValue, res.value]);
           resultStack.top().push(node);
           needle += res.length;
@@ -37,19 +37,19 @@ function parseInline(source: string): L.MfmNode[] {
       })();
       if (group !== null) {
         groupValueStack.push({ group, openingValue: value });
-        resultStack.push([]);
+        resultStack.push(new Stack());
         needle += length;
         continue;
       }
     }
     {
       const siblings = resultStack.top();
-      if (siblings.length === 0 || siblings[siblings.length - 1].type !== 'text') {
+      if (siblings.empty() || siblings.top().type !== 'text') {
         siblings.push({ type: 'text', text: '' });
       }
-      (siblings[siblings.length - 1] as L.TextNode).text += source[needle];
+      (siblings.top() as L.TextNode).text += source[needle];
       needle++;
     }
   }
-  return resultStack.pop();
+  return resultStack.pop().toArray();
 }
