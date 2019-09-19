@@ -1,75 +1,11 @@
 import { Stack } from './stack';
-
-type RootNode = { type: 'root', children: Node[] }
-
-type TextNode = { type: 'text', text: string };
-
-type JumpNode = { type: 'jump', children: Node[] };
-
-type BigNode = { type: 'big', children: Node[] };
-
-type BoldNode = { type: 'bold', children: Node[] };
-
-type ItalicNode = { type: 'italic', children: Node[] };
-
-type SmallNode = { type: 'small', children: Node[] };
-
-type MotionNode = { type: 'motion', children: Node[] };
-
-type StrikeNode = { type: 'strike', children: Node[] };
-
-type FlipNode = { type: 'flip', children: Node[] };
-
-type SpinNode = { type: 'spin', attr: string, children: Node[] };
-
-type GroupNode
-  = JumpNode
-  | BigNode
-  | BoldNode
-  | ItalicNode
-  | SmallNode
-  | MotionNode
-  | StrikeNode
-  | FlipNode
-  | SpinNode;
-
-type Node
-  = RootNode
-  | TextNode
-  | GroupNode;
-
-const _groupType = false ? (null as GroupNode).type : null;
-
-type PartialNode = { type: typeof _groupType, children: Node[] };
-
-type Group = {
-  type: typeof _groupType,
-  opening: string | RegExp,
-  closing: string,
-  gen?: (partialNode: PartialNode, matches: { openingMatch?: RegExpMatchArray, closingMatch?: RegExpMatchArray }) => Node,
-};
-
-const groups: Group[] = [
-  { type: 'jump', opening: '<jump>', closing: '</jump>' },
-  { type: 'big', opening: '***', closing: '***' },
-  { type: 'bold', opening: '**', closing: '**' },
-  { type: 'italic', opening: '<i>', closing: '</i>' },
-  { type: 'small', opening: '<small>', closing: '</small>' },
-  { type: 'motion', opening: '(((', closing: ')))' },
-  { type: 'motion', opening: '<motion>', closing: '</motion>' },
-  { type: 'strike', opening: '~~', closing: '~~' },
-  { type: 'flip', opening: '<flip>', closing: '</flip>' },
-  {
-    type: 'spin', opening: /^<spin\s?([a-z]*)>/, closing: '</spin>',
-    gen: (partialNode, { openingMatch }) => Object.assign({}, partialNode, { attr: openingMatch[1] }) as Node
-  },
-];
+import { RootNode, Group, PartialNode, TextNode, Node, language } from './language';
 
 export function parse(source: string): RootNode {
-  return parseInline(source);
+  return { type: 'root', children: parseInline(source) };
 }
 
-function parseInline(source: string): RootNode {
+function parseInline(source: string): Node[] {
   const groupMatchStack = new Stack<{ group: Group, openingMatch?: RegExpMatchArray }>();
   const resultStack = new Stack<Node[]>();
   resultStack.push([]);
@@ -91,7 +27,7 @@ function parseInline(source: string): RootNode {
     }
     {
       const { group, length, matched } = (() => {
-        for (const group of groups) {
+        for (const group of language.groups) {
           if (typeof group.opening === 'string') {
             if (source.substr(needle, group.opening.length) === group.opening) {
               return { group, length: group.opening.length, matched: null };
@@ -121,5 +57,5 @@ function parseInline(source: string): RootNode {
       needle++;
     }
   }
-  return { type: 'root', children: resultStack.pop() };
+  return resultStack.pop();
 }
