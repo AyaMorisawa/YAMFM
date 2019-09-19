@@ -5,29 +5,29 @@ export type RootNode = { type: 'root', children: MfmNode[] }
 
 export type TextNode = { type: 'text', text: string };
 
-export type JumpNode = { type: 'jump', children: MfmNode[] };
+type JumpNode = { type: 'jump', children: MfmNode[] };
 
-export type BigNode = { type: 'big', children: MfmNode[] };
+type BigNode = { type: 'big', children: MfmNode[] };
 
-export type BoldNode = { type: 'bold', children: MfmNode[] };
+type BoldNode = { type: 'bold', children: MfmNode[] };
 
-export type ItalicNode = { type: 'italic', children: MfmNode[] };
+type ItalicNode = { type: 'italic', children: MfmNode[] };
 
-export type SmallNode = { type: 'small', children: MfmNode[] };
+type SmallNode = { type: 'small', children: MfmNode[] };
 
-export type MotionNode = { type: 'motion', children: MfmNode[] };
+type MotionNode = { type: 'motion', children: MfmNode[] };
 
-export type StrikeNode = { type: 'strike', children: MfmNode[] };
+type StrikeNode = { type: 'strike', children: MfmNode[] };
 
-export type FlipNode = { type: 'flip', children: MfmNode[] };
+type FlipNode = { type: 'flip', children: MfmNode[] };
 
-export type SpinNode = { type: 'spin', attr: string, children: MfmNode[] };
+type SpinNode = { type: 'spin', attr: string, children: MfmNode[] };
 
-export type InlineCodeNode = { type: 'inlineCode', code: string };
+type InlineCodeNode = { type: 'inlineCode', code: string };
 
-export type InlineMathNode = { type: 'inlineMath', formula: string };
+type InlineMathNode = { type: 'inlineMath', formula: string };
 
-export type GroupNode
+type GroupNode
   = JumpNode
   | BigNode
   | BoldNode
@@ -38,13 +38,13 @@ export type GroupNode
   | FlipNode
   | SpinNode;
 
-export type PrimitiveNode
+type PrimitiveNode
   = BoldNode
   | ItalicNode
   | InlineCodeNode
   | InlineMathNode;
 
-export type MfmNode
+type MfmNode
   = RootNode
   | TextNode
   | GroupNode
