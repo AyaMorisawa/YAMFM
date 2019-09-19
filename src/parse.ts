@@ -9,18 +9,18 @@ function parseInline(source: string): L.MfmNode[] {
   const groupValueStack = new Stack<{ group: L.Group, openingValue?: any }>();
   const resultStack = new Stack<Stack<L.MfmNode>>();
   resultStack.push(new Stack());
-  let needle = 0;
-  while (needle < source.length) {
+  let offset = 0;
+  while (offset < source.length) {
     {
       if (!groupValueStack.empty()) {
         const { group, openingValue } = groupValueStack.top();
-        const res = group.closing({ text: source, offset: needle });
+        const res = group.closing({ text: source, offset });
         if (res.status === 'succeed') {
           groupValueStack.pop();
           const children = resultStack.pop().toArray();
           const node = group.gen({ type: group.type, children }, [openingValue, res.value]);
           resultStack.top().push(node);
-          needle += res.length;
+          offset += res.length;
           continue;
         }
       }
@@ -28,7 +28,7 @@ function parseInline(source: string): L.MfmNode[] {
     {
       const { group, length, value } = (() => {
         for (const group of L.groups) {
-          const res = group.opening({ text: source, offset: needle });
+          const res = group.opening({ text: source, offset });
           if (res.status === 'succeed') {
             return { group, length: res.length, value: res.value };
           }
@@ -38,14 +38,14 @@ function parseInline(source: string): L.MfmNode[] {
       if (group !== null) {
         groupValueStack.push({ group, openingValue: value });
         resultStack.push(new Stack());
-        needle += length;
+        offset += length;
         continue;
       }
     }
     {
       const { primitive, length, value } = (() => {
         for (const primitive of L.primitives) {
-          const res = primitive.parser({ text: source, offset: needle });
+          const res = primitive.parser({ text: source, offset });
           if (res.status === 'succeed') {
             return { primitive, length: res.length, value: res.value };
           }
@@ -55,7 +55,7 @@ function parseInline(source: string): L.MfmNode[] {
       if (primitive !== null) {
         const node = primitive.gen({ type: primitive.type }, value);
         resultStack.top().push(node);
-        needle += length;
+        offset += length;
         continue;
       }
     }
@@ -64,8 +64,8 @@ function parseInline(source: string): L.MfmNode[] {
       if (siblings.empty() || siblings.top().type !== 'text') {
         siblings.push({ type: 'text', text: '' });
       }
-      (siblings.top() as L.TextNode).text += source[needle];
-      needle++;
+      (siblings.top() as L.TextNode).text += source[offset];
+      offset++;
     }
   }
   return resultStack.pop().toArray();
