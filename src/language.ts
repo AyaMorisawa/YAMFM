@@ -55,5 +55,5 @@ export const groups: Group[] = [
   T.group('flip', P.str('<flip>'), P.str('</flip>')),
   T.group('spin', P.regex(/^<spin\s?([a-z]*)>/), P.str('</spin>'), (partialNode, [[, attr]]) => {
     return Object.assign({}, partialNode, { attr }) as unknown as MfmNode;
-  })
+  }),
 ];
