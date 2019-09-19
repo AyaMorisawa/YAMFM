@@ -44,4 +44,6 @@ See test code.
 * [ ] url
 * [ ] link
 * [ ] emoji
+  * [ ] name
+  * [ ] code
 * [x] text
