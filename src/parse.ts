@@ -1,5 +1,5 @@
 import { Stack } from './stack';
-import { RootNode, Group, PartialNode, TextNode, Node, language } from './language';
+import { RootNode, Group, TextNode, Node, language } from './language';
 
 export function parse(source: string): RootNode {
   return { type: 'root', children: parseInline(source) };
