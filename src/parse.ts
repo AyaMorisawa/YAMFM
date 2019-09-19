@@ -6,17 +6,17 @@ export function parse(source: string): L.RootNode {
 }
 
 function parseInline(source: string): L.MfmNode[] {
-  const groupMatchStack = new Stack<{ group: L.Group, openingValue?: any }>();
+  const groupValueStack = new Stack<{ group: L.Group, openingValue?: any }>();
   const resultStack = new Stack<L.MfmNode[]>();
   resultStack.push([]);
   let needle = 0;
   while (needle < source.length) {
     {
-      if (!groupMatchStack.empty()) {
-        const { group, openingValue } = groupMatchStack.top();
+      if (!groupValueStack.empty()) {
+        const { group, openingValue } = groupValueStack.top();
         const res = group.closing({ text: source, offset: needle });
         if (res.status === 'succeed') {
-          groupMatchStack.pop();
+          groupValueStack.pop();
           const children = resultStack.pop();
           const node = group.gen({ type: group.type, children }, [openingValue, res.value]);
           resultStack.top().push(node);
@@ -36,7 +36,7 @@ function parseInline(source: string): L.MfmNode[] {
         return { group: null, length: 0, value: null };
       })();
       if (group !== null) {
-        groupMatchStack.push({ group, openingValue: value });
+        groupValueStack.push({ group, openingValue: value });
         resultStack.push([]);
         needle += length;
         continue;
