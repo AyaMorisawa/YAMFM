@@ -43,7 +43,7 @@ const _groupType = false ? (null as GroupNode).type : null;
 
 export type Group = T.Group<typeof _groupType, MfmNode, any, any>;
 
-const groups: Group[] = [
+export const groups: Group[] = [
   T.group('jump', P.str('<jump>'), P.str('</jump>')),
   T.group('big', P.str('***'), P.str('***')),
   T.group('bold', P.str('**'), P.str('**')),
@@ -57,5 +57,3 @@ const groups: Group[] = [
     return Object.assign({}, partialNode, { attr }) as unknown as MfmNode;
   })
 ];
-
-export const language = { groups };

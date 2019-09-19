@@ -1,13 +1,13 @@
 import { Stack } from './stack';
-import { RootNode, Group, TextNode, MfmNode, language } from './language';
+import * as L from './language';
 
-export function parse(source: string): RootNode {
+export function parse(source: string): L.RootNode {
   return { type: 'root', children: parseInline(source) };
 }
 
-function parseInline(source: string): MfmNode[] {
-  const groupMatchStack = new Stack<{ group: Group, openingValue?: any }>();
-  const resultStack = new Stack<MfmNode[]>();
+function parseInline(source: string): L.MfmNode[] {
+  const groupMatchStack = new Stack<{ group: L.Group, openingValue?: any }>();
+  const resultStack = new Stack<L.MfmNode[]>();
   resultStack.push([]);
   let needle = 0;
   while (needle < source.length) {
@@ -27,7 +27,7 @@ function parseInline(source: string): MfmNode[] {
     }
     {
       const { group, length, value } = (() => {
-        for (const group of language.groups) {
+        for (const group of L.groups) {
           const res = group.opening({ text: source, offset: needle });
           if (res.status === 'succeed') {
             return { group, length: res.length, value: res.value };
@@ -47,7 +47,7 @@ function parseInline(source: string): MfmNode[] {
       if (siblings.length === 0 || siblings[siblings.length - 1].type !== 'text') {
         siblings.push({ type: 'text', text: '' });
       }
-      (siblings[siblings.length - 1] as TextNode).text += source[needle];
+      (siblings[siblings.length - 1] as L.TextNode).text += source[needle];
       needle++;
     }
   }
