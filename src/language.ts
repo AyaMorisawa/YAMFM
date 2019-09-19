@@ -23,6 +23,8 @@ export type FlipNode = { type: 'flip', children: MfmNode[] };
 
 export type SpinNode = { type: 'spin', attr: string, children: MfmNode[] };
 
+export type InlineCodeNode = { type: 'inlineCode', code: string };
+
 export type GroupNode
   = JumpNode
   | BigNode
@@ -34,10 +36,14 @@ export type GroupNode
   | FlipNode
   | SpinNode;
 
+export type PrimitiveNode
+  = InlineCodeNode;
+
 export type MfmNode
   = RootNode
   | TextNode
-  | GroupNode;
+  | GroupNode
+  | PrimitiveNode;
 
 const _groupType = false ? (null as GroupNode).type : null;
 
@@ -56,4 +62,12 @@ export const groups: Group[] = [
   T.group('spin', P.regex(/^<spin\s?([a-z]*)>/), P.str('</spin>'), (partialNode, [[, attr]]) => {
     return Object.assign({}, partialNode, { attr }) as unknown as MfmNode;
   }),
+];
+
+export const primitives = [
+  {
+    type: 'inlineCode', parser: P.regex(/^`([^`\n]+?)`/), gen: ((partialNode, [, code]) => {
+      return Object.assign({}, partialNode, { code });
+    }) as any
+  },
 ];

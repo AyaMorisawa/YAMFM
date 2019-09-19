@@ -43,6 +43,23 @@ function parseInline(source: string): L.MfmNode[] {
       }
     }
     {
+      const { primitive, length, value } = (() => {
+        for (const primitive of L.primitives) {
+          const res = primitive.parser({ text: source, offset: needle });
+          if (res.status === 'succeed') {
+            return { primitive, length: res.length, value: res.value };
+          }
+        }
+        return { primitive: null, length: 0, value: null };
+      })();
+      if (primitive !== null) {
+        const node = primitive.gen({ type: primitive.type }, value);
+        resultStack.top().push(node);
+        needle += length;
+        continue;
+      }
+    }
+    {
       const siblings = resultStack.top();
       if (siblings.empty() || siblings.top().type !== 'text') {
         siblings.push({ type: 'text', text: '' });

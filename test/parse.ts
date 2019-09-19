@@ -80,6 +80,12 @@ describe('parse', () => {
     });
   });
 
+  it('inlineCode', () => {
+    assert.deepStrictEqual(parse('`aa`'), {
+      type: 'root', children: [{ type: 'inlineCode', code: 'aa' }]
+    });
+  })
+
   it('nested', () => {
     assert.deepStrictEqual(parse('aa<jump>bb<jump>cc</jump>dd</jump>ee'), {
       type: 'root', children: [

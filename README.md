@@ -37,7 +37,7 @@ See test code.
 * [x] spin
 * [x] jump
 * [x] flip
-* [ ] inlineCode
+* [x] inlineCode
 * [ ] inlineMath
 * [ ] mention
 * [ ] hashtag
