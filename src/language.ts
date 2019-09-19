@@ -44,7 +44,7 @@ type PrimitiveNode
   | InlineCodeNode
   | InlineMathNode;
 
-type MfmNode
+export type MfmNode
   = RootNode
   | TextNode
   | GroupNode
