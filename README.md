@@ -38,7 +38,7 @@ See test code.
 * [x] jump
 * [x] flip
 * [x] inlineCode
-* [ ] inlineMath
+* [x] inlineMath
 * [ ] mention
 * [ ] hashtag
 * [ ] url

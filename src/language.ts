@@ -25,6 +25,8 @@ export type SpinNode = { type: 'spin', attr: string, children: MfmNode[] };
 
 export type InlineCodeNode = { type: 'inlineCode', code: string };
 
+export type InlineMathNode = { type: 'inlineMath', formula: string };
+
 export type GroupNode
   = JumpNode
   | BigNode
@@ -39,7 +41,8 @@ export type GroupNode
 export type PrimitiveNode
   = BoldNode
   | ItalicNode
-  | InlineCodeNode;
+  | InlineCodeNode
+  | InlineMathNode;
 
 export type MfmNode
   = RootNode
@@ -82,5 +85,8 @@ export const primitives: Primitive[] = [
   }),
   T.primitive('inlineCode', P.regex(/^`([^`\n]+?)`/), (partialNode, [, code]) => {
     return Object.assign({}, partialNode, { code });
+  }),
+  T.primitive('inlineMath', P.regex(/^\\\((.+?)\\\)/), (partialNode, [, formula]) => {
+    return Object.assign({}, partialNode, { formula });
   }),
 ];

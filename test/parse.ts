@@ -104,6 +104,12 @@ describe('parse', () => {
     });
   });
 
+  it('inlineMath', () => {
+    assert.deepStrictEqual(parse('\\(a + b\\)'), {
+      type: 'root', children: [{ type: 'inlineMath', formula: 'a + b' }]
+    });
+  });
+
   it('nested', () => {
     assert.deepStrictEqual(parse('aa<jump>bb<jump>cc</jump>dd</jump>ee'), {
       type: 'root', children: [
