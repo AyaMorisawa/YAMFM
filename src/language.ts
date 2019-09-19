@@ -38,7 +38,8 @@ export type GroupNode
 
 export type PrimitiveNode
   = InlineCodeNode
-  | BoldNode;
+  | BoldNode
+  | ItalicNode;
 
 export type MfmNode
   = RootNode
@@ -75,5 +76,8 @@ export const primitives: Primitive[] = [
   }),
   T.primitive('bold', P.regex(/^__([a-zA-Z0-9\s]+?)__/), (partialNode, [, text]) => {
     return Object.assign({}, partialNode, { children: [{ type: 'text', text }] }) as BoldNode;
+  }),
+  T.primitive('italic', P.regex(/^_([a-zA-Z0-9\s]+?)_/), (partialNode, [, text]) => {
+    return Object.assign({}, partialNode, { children: [{ type: 'text', text }] }) as ItalicNode;
   }),
 ];

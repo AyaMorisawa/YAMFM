@@ -28,7 +28,7 @@ See test code.
 * [x] small
 * [ ] italic
   * [ ] `*`
-  * [ ] `_`
+  * [x] `_`
   * [x] `<i>`
 * [x] strike
 * [x] motion

@@ -38,6 +38,12 @@ describe('parse', () => {
     });
   });
 
+  it('italic underscore', () => {
+    assert.deepStrictEqual(parse('_aa_'), {
+      type: 'root', children: [{ type: 'italic', children: [{ type: 'text', text: 'aa' }] }]
+    });
+  });
+
   it('italic xml', () => {
     assert.deepStrictEqual(parse('<i>aa</i>'), {
       type: 'root', children: [{ type: 'italic', children: [{ type: 'text', text: 'aa' }] }]
