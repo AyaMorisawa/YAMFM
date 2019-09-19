@@ -9,7 +9,7 @@ See test code.
 
 ## Todo
 * [ ] Benchmark
-* [ ] npm
+* [ ] Publish at npm
 
 ### Language
 #### Block elements
