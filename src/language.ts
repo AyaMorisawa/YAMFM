@@ -47,20 +47,23 @@ export type Group = {
   gen?: (partialNode: PartialNode, matches: { openingMatch?: RegExpMatchArray, closingMatch?: RegExpMatchArray }) => Node,
 };
 
+function group(type: typeof _groupType, opening: string | RegExp, closing: string, gen?: (partialNode: PartialNode, matches: { openingMatch?: RegExpMatchArray, closingMatch?: RegExpMatchArray }) => Node) {
+  return { type, opening, closing, gen };
+}
+
 const groups: Group[] = [
-  { type: 'jump', opening: '<jump>', closing: '</jump>' },
-  { type: 'big', opening: '***', closing: '***' },
-  { type: 'bold', opening: '**', closing: '**' },
-  { type: 'italic', opening: '<i>', closing: '</i>' },
-  { type: 'small', opening: '<small>', closing: '</small>' },
-  { type: 'motion', opening: '(((', closing: ')))' },
-  { type: 'motion', opening: '<motion>', closing: '</motion>' },
-  { type: 'strike', opening: '~~', closing: '~~' },
-  { type: 'flip', opening: '<flip>', closing: '</flip>' },
-  {
-    type: 'spin', opening: /^<spin\s?([a-z]*)>/, closing: '</spin>',
-    gen: (partialNode, { openingMatch }) => Object.assign({}, partialNode, { attr: openingMatch[1] }) as Node
-  },
+  group('jump', '<jump>', '</jump>'),
+  group('big', '***', '***'),
+  group('bold', '**', '**'),
+  group('italic', '<i>', '</i>'),
+  group('small', '<small>', '</small>'),
+  group('motion', '(((', ')))'),
+  group('motion', '<motion>', '</motion>'),
+  group('strike', '~~', '~~'),
+  group('flip', '<flip>', '</flip>'),
+  group('spin', /^<spin\s?([a-z]*)>/, '</spin>', (partialNode, { openingMatch }) => {
+    return Object.assign({}, partialNode, { attr: openingMatch[1] }) as Node;
+  }),
 ];
 
 export const language = { groups };
