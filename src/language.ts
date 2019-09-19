@@ -72,13 +72,13 @@ type Primitive = T.Primitive<typeof _primitiveType, MfmNode, any>;
 
 export const primitives: Primitive[] = [
   T.primitive('bold', P.regex(/^__([a-zA-Z0-9\s]+?)__/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [{ type: 'text', text }] }) as BoldNode;
+    return Object.assign({}, partialNode, { children: [{ type: 'text', text } as TextNode] });
   }),
   T.primitive('italic', P.regex(/^\*([a-zA-Z0-9\s]+?)\*/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [{ type: 'text', text }] }) as ItalicNode;
+    return Object.assign({}, partialNode, { children: [{ type: 'text', text } as TextNode] });
   }),
   T.primitive('italic', P.regex(/^_([a-zA-Z0-9\s]+?)_/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [{ type: 'text', text }] }) as ItalicNode;
+    return Object.assign({}, partialNode, { children: [{ type: 'text', text } as TextNode] });
   }),
   T.primitive('inlineCode', P.regex(/^`([^`\n]+?)`/), (partialNode, [, code]) => {
     return Object.assign({}, partialNode, { code });
