@@ -10,6 +10,7 @@ See test code.
 ## Todo
 * [ ] Use Parsimmon (just an idea, will not necessarily be worked on)
 * [ ] Benchmark
+* [ ] npm
 
 ### Language
 #### Block elements
