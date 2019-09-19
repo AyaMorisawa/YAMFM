@@ -68,6 +68,18 @@ describe('parse', () => {
     });
   });
 
+  it('spin', () => {
+    assert.deepStrictEqual(parse('<spin>aa</spin>'), {
+      type: 'root', children: [{ type: 'spin', attr: '', children: [{ type: 'text', text: 'aa' }] }]
+    });
+  });
+
+  it('spin attr', () => {
+    assert.deepStrictEqual(parse('<spin left>aa</spin>'), {
+      type: 'root', children: [{ type: 'spin', attr: 'left', children: [{ type: 'text', text: 'aa' }] }]
+    });
+  });
+
   it('nested', () => {
     assert.deepStrictEqual(parse('aa<jump>bb<jump>cc</jump>dd</jump>ee'), {
       type: 'root', children: [

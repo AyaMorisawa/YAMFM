@@ -34,7 +34,7 @@ See test code.
 * [x] motion
   * [x] `(((`
   * [x] `<motion>`
-* [ ] spin
+* [x] spin
 * [x] jump
 * [x] flip
 * [ ] inlineCode
