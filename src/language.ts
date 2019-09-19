@@ -64,10 +64,12 @@ export const groups: Group[] = [
   }),
 ];
 
-export const primitives = [
-  {
-    type: 'inlineCode', parser: P.regex(/^`([^`\n]+?)`/), gen: ((partialNode, [, code]) => {
-      return Object.assign({}, partialNode, { code });
-    }) as any
-  },
+const _primitiveType = false ? (null as PrimitiveNode).type : null;
+
+type Primitive = T.Primitive<typeof _primitiveType, MfmNode, any>;
+
+export const primitives: Primitive[] = [
+  T.primitive('inlineCode', P.regex(/^`([^`\n]+?)`/), (partialNode, [, code]) => {
+    return Object.assign({}, partialNode, { code });
+  }),
 ];
