@@ -1,13 +1,13 @@
 import { Stack } from './stack';
-import { RootNode, Group, TextNode, Node, language } from './language';
+import { RootNode, Group, TextNode, MfmNode, language } from './language';
 
 export function parse(source: string): RootNode {
   return { type: 'root', children: parseInline(source) };
 }
 
-function parseInline(source: string): Node[] {
+function parseInline(source: string): MfmNode[] {
   const groupMatchStack = new Stack<{ group: Group, openingValue?: any }>();
-  const resultStack = new Stack<Node[]>();
+  const resultStack = new Stack<MfmNode[]>();
   resultStack.push([]);
   let needle = 0;
   while (needle < source.length) {

@@ -1,26 +1,27 @@
-import { str, Parser, regex } from './parser-combinators';
+import * as T from './types';
+import * as P from './parser-combinators';
 
-export type RootNode = { type: 'root', children: Node[] }
+export type RootNode = { type: 'root', children: MfmNode[] }
 
 export type TextNode = { type: 'text', text: string };
 
-export type JumpNode = { type: 'jump', children: Node[] };
+export type JumpNode = { type: 'jump', children: MfmNode[] };
 
-export type BigNode = { type: 'big', children: Node[] };
+export type BigNode = { type: 'big', children: MfmNode[] };
 
-export type BoldNode = { type: 'bold', children: Node[] };
+export type BoldNode = { type: 'bold', children: MfmNode[] };
 
-export type ItalicNode = { type: 'italic', children: Node[] };
+export type ItalicNode = { type: 'italic', children: MfmNode[] };
 
-export type SmallNode = { type: 'small', children: Node[] };
+export type SmallNode = { type: 'small', children: MfmNode[] };
 
-export type MotionNode = { type: 'motion', children: Node[] };
+export type MotionNode = { type: 'motion', children: MfmNode[] };
 
-export type StrikeNode = { type: 'strike', children: Node[] };
+export type StrikeNode = { type: 'strike', children: MfmNode[] };
 
-export type FlipNode = { type: 'flip', children: Node[] };
+export type FlipNode = { type: 'flip', children: MfmNode[] };
 
-export type SpinNode = { type: 'spin', attr: string, children: Node[] };
+export type SpinNode = { type: 'spin', attr: string, children: MfmNode[] };
 
 export type GroupNode
   = JumpNode
@@ -33,40 +34,28 @@ export type GroupNode
   | FlipNode
   | SpinNode;
 
-export type Node
+export type MfmNode
   = RootNode
   | TextNode
   | GroupNode;
 
 const _groupType = false ? (null as GroupNode).type : null;
 
-type PartialNode = { type: typeof _groupType, children: Node[] };
-
-export type Group = {
-  type: typeof _groupType,
-  opening: Parser<any>,
-  closing: Parser<any>,
-  gen?: (partialNode: PartialNode, values: [any, any]) => Node,
-};
-
-function group<S, T>(type: typeof _groupType, opening: Parser<S>, closing: Parser<T>, gen?: (partialNode: PartialNode, values: [S, T]) => Node): Group {
-  if (typeof gen === 'undefined') gen = (partialNode, values) => partialNode as Node;
-  return { type, opening, closing, gen };
-}
+export type Group = T.Group<typeof _groupType, MfmNode, any, any>;
 
 const groups: Group[] = [
-  group('jump', str('<jump>'), str('</jump>')),
-  group('big', str('***'), str('***')),
-  group('bold', str('**'), str('**')),
-  group('italic', str('<i>'), str('</i>')),
-  group('small', str('<small>'), str('</small>')),
-  group('motion', str('((('), str(')))')),
-  group('motion', str('<motion>'), str('</motion>')),
-  group('strike', str('~~'), str('~~')),
-  group('flip', str('<flip>'), str('</flip>')),
-  group('spin', regex(/^<spin\s?([a-z]*)>/), str('</spin>'), (partialNode, [[, attr]]) => {
-    return Object.assign({}, partialNode, { attr }) as Node;
-  }),
+  T.group('jump', P.str('<jump>'), P.str('</jump>')),
+  T.group('big', P.str('***'), P.str('***')),
+  T.group('bold', P.str('**'), P.str('**')),
+  T.group('italic', P.str('<i>'), P.str('</i>')),
+  T.group('small', P.str('<small>'), P.str('</small>')),
+  T.group('motion', P.str('((('), P.str(')))')),
+  T.group('motion', P.str('<motion>'), P.str('</motion>')),
+  T.group('strike', P.str('~~'), P.str('~~')),
+  T.group('flip', P.str('<flip>'), P.str('</flip>')),
+  T.group('spin', P.regex(/^<spin\s?([a-z]*)>/), P.str('</spin>'), (partialNode, [[, attr]]) => {
+    return Object.assign({}, partialNode, { attr }) as unknown as MfmNode;
+  })
 ];
 
 export const language = { groups };
