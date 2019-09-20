@@ -31,20 +31,14 @@ function parseInline(source: string): L.MfmNode[] {
         }
       },
       () => {
-        const { group, length, value } = (() => {
-          for (const group of L.groups) {
-            const res = group.opening({ text: source, offset });
-            if (res.status === 'succeed') {
-              return { group, length: res.length, value: res.value };
-            }
+        for (const group of L.groups) {
+          const res = group.opening({ text: source, offset });
+          if (res.status === 'succeed') {
+            groupValueStack.push({ group, openingValue: res.value });
+            resultStack.push(new Stack());
+            offset += res.length;
+            return true;
           }
-          return { group: null, length: 0, value: null };
-        })();
-        if (group !== null) {
-          groupValueStack.push({ group, openingValue: value });
-          resultStack.push(new Stack());
-          offset += length;
-          return true;
         }
       },
       () => {
