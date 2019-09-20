@@ -47,3 +47,7 @@ export type MfmNode
   | TextNode
   | GroupNode
   | PrimitiveNode;
+
+export function text(text: string): TextNode {
+  return { type: 'text', text };
+}

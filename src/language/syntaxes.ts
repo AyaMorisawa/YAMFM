@@ -29,13 +29,13 @@ type Primitive = <R>(cont: <S>(t: T.Primitive<typeof _primitiveType, N.MfmNode, 
 
 export const primitives: Primitive[] = [
   T.primitive('bold', P.regex(/^__([a-zA-Z0-9\s]+?)__/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [{ type: 'text', text } as N.TextNode] });
+    return Object.assign({}, partialNode, { children: [N.text(text)] });
   }),
   T.primitive('italic', P.regex(/^\*([a-zA-Z0-9\s]+?)\*/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [{ type: 'text', text } as N.TextNode] });
+    return Object.assign({}, partialNode, { children: [N.text(text)] });
   }),
   T.primitive('italic', P.regex(/^_([a-zA-Z0-9\s]+?)_/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [{ type: 'text', text } as N.TextNode] });
+    return Object.assign({}, partialNode, { children: [N.text(text)] });
   }),
   T.primitive('inlineCode', P.regex(/^`([^`\n]+?)`/), (partialNode, [, code]) => {
     return Object.assign({}, partialNode, { code });

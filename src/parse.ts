@@ -65,7 +65,7 @@ function parseInline(source: string): N.MfmNode[] {
       () => {
         const siblings = resultStack.top();
         if (siblings.empty() || siblings.top().type !== 'text') {
-          siblings.push({ type: 'text', text: '' });
+          siblings.push(N.text(''));
         }
         (siblings.top() as N.TextNode).text += source[offset];
         offset++;
