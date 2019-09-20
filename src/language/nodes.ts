@@ -1,4 +1,4 @@
-export type RootNode = { type: 'root', children: MfmNode[] }
+export type RootNode = { type: 'root', children: MfmNode[] };
 
 export type TextNode = { type: 'text', text: string };
 
