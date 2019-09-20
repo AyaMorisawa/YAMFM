@@ -10,7 +10,7 @@ function fallback(fn: (() => boolean)[]): void {
 }
 
 function parseInline(source: string): L.MfmNode[] {
-  const groupValueStack = new Stack<{ group: L.Group, openingValue?: any }>();
+  const groupValueStack = new Stack<<R>(cont: <S, T>(t: { g: L.GroupT<S, T>, openingValue?: S }) => R) => R>();
   const resultStack = new Stack<Stack<L.MfmNode>>();
   resultStack.push(new Stack());
   let offset = 0;
@@ -18,27 +18,33 @@ function parseInline(source: string): L.MfmNode[] {
     fallback([
       () => {
         if (!groupValueStack.empty()) {
-          const { group, openingValue } = groupValueStack.top();
-          const res = group.closing({ text: source, offset });
-          if (res.status === 'succeed') {
-            groupValueStack.pop();
-            const children = resultStack.pop().toArray();
-            const node = group.gen({ type: group.type, children }, [openingValue, res.value]);
-            resultStack.top().push(node);
-            offset += res.length;
-            return true;
-          }
+          const groupValue = groupValueStack.top();
+          const done = groupValue(({ g, openingValue }) => {
+            const res = g.closing({ text: source, offset });
+            if (res.status === 'succeed') {
+              groupValueStack.pop();
+              const children = resultStack.pop().toArray();
+              const node = g.gen({ type: g.type, children }, [openingValue, res.value]);
+              resultStack.top().push(node);
+              offset += res.length;
+              return true;
+            }
+          });
+          if (done) return true;
         }
       },
       () => {
         for (const group of L.groups) {
-          const res = group.opening({ text: source, offset });
-          if (res.status === 'succeed') {
-            groupValueStack.push({ group, openingValue: res.value });
-            resultStack.push(new Stack());
-            offset += res.length;
-            return true;
-          }
+          const done = group(g => {
+            const res = g.opening({ text: source, offset });
+            if (res.status === 'succeed') {
+              groupValueStack.push(cont => cont({ g, openingValue: res.value }));
+              resultStack.push(new Stack());
+              offset += res.length;
+              return true;
+            }
+          });
+          if (done) return true;
         }
       },
       () => {
