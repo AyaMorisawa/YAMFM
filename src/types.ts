@@ -29,7 +29,7 @@ export type Primitive<PrimitiveType, NodeType, S> = {
 export function primitive<PrimitiveType, NodeType, S>(
   type: PrimitiveType,
   parser: Parser<S>,
-  gen?: (partialNode: PrimitivePartialNode<PrimitiveType>, value: S) => NodeType): Primitive<PrimitiveType, NodeType, S> {
+  gen?: (partialNode: PrimitivePartialNode<PrimitiveType>, value: S) => NodeType): <R>(cont: <S>(t: Primitive<PrimitiveType, NodeType, S>) => R) => R {
   if (typeof gen === 'undefined') gen = (partialNode, value) => partialNode as unknown as NodeType;
-  return { type, parser, gen };
+  return cont => cont({ type, parser, gen });
 }

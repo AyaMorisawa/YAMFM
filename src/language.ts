@@ -71,7 +71,7 @@ export const groups: Group[] = [
 
 const _primitiveType = false ? (null as PrimitiveNode).type : null;
 
-type Primitive = T.Primitive<typeof _primitiveType, MfmNode, any>;
+type Primitive = <R>(cont: <S>(t: T.Primitive<typeof _primitiveType, MfmNode, S>) => R) => R
 
 export const primitives: Primitive[] = [
   T.primitive('bold', P.regex(/^__([a-zA-Z0-9\s]+?)__/), (partialNode, [, text]) => {
