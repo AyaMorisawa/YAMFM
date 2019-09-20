@@ -1,7 +1,8 @@
 import { Stack } from './stack';
-import * as L from './language';
+import * as S from './language/syntaxes';
+import * as N from './language/nodes';
 
-export function parse(source: string): L.RootNode {
+export function parse(source: string): N.RootNode {
   return { type: 'root', children: parseInline(source) };
 }
 
@@ -9,9 +10,9 @@ function fallback(fn: (() => boolean)[]): void {
   fn.find(f => f());
 }
 
-function parseInline(source: string): L.MfmNode[] {
-  const groupValueStack = new Stack<<R>(cont: <S, T>(t: { g: L.GroupT<S, T>, openingValue?: S }) => R) => R>();
-  const resultStack = new Stack<Stack<L.MfmNode>>();
+function parseInline(source: string): N.MfmNode[] {
+  const groupValueStack = new Stack<<R>(cont: <S, T>(t: { g: S.GroupT<S, T>, openingValue?: S }) => R) => R>();
+  const resultStack = new Stack<Stack<N.MfmNode>>();
   resultStack.push(new Stack());
   let offset = 0;
   while (offset < source.length) {
@@ -34,7 +35,7 @@ function parseInline(source: string): L.MfmNode[] {
         }
       },
       () => {
-        for (const group of L.groups) {
+        for (const group of S.groups) {
           const done = group(g => {
             const res = g.opening({ text: source, offset });
             if (res.status === 'succeed') {
@@ -48,7 +49,7 @@ function parseInline(source: string): L.MfmNode[] {
         }
       },
       () => {
-        for (const primitive of L.primitives) {
+        for (const primitive of S.primitives) {
           const done = primitive(p => {
             const res = p.parser({ text: source, offset });
             if (res.status === 'succeed') {
@@ -66,7 +67,7 @@ function parseInline(source: string): L.MfmNode[] {
         if (siblings.empty() || siblings.top().type !== 'text') {
           siblings.push({ type: 'text', text: '' });
         }
-        (siblings.top() as L.TextNode).text += source[offset];
+        (siblings.top() as N.TextNode).text += source[offset];
         offset++;
         return true;
       },
