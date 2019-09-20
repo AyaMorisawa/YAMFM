@@ -29,7 +29,6 @@ function parseInline(source: string): L.MfmNode[] {
             return true;
           }
         }
-        return false;
       },
       () => {
         const { group, length, value } = (() => {
@@ -47,7 +46,6 @@ function parseInline(source: string): L.MfmNode[] {
           offset += length;
           return true;
         }
-        return false;
       },
       () => {
         for (const primitive of L.primitives) {
@@ -58,13 +56,10 @@ function parseInline(source: string): L.MfmNode[] {
               resultStack.top().push(node);
               offset += res.length;
               return true;
-            } else {
-              return false;
             }
           });
           if (done) return true;
         }
-        return false;
       },
       () => {
         const siblings = resultStack.top();
