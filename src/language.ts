@@ -53,7 +53,7 @@ export type MfmNode
 const _groupType = false ? (null as GroupNode).type : null;
 
 export type GroupT<S, T> = T.Group<typeof _groupType, MfmNode, S, T>;
-export type Group = <R>(cont: <S, T>(t: GroupT<S, T>) => R) => R;
+type Group = <R>(cont: <S, T>(t: GroupT<S, T>) => R) => R;
 
 export const groups: Group[] = [
   T.group('jump', P.str('<jump>'), P.str('</jump>')),
