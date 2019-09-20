@@ -2,7 +2,6 @@ import * as T from '../types';
 import * as P from '../parser-combinators';
 import * as N from './nodes';
 
-
 const _groupType = false ? (null as N.GroupNode).type : null;
 
 export type GroupT<S, T> = T.Group<typeof _groupType, N.MfmNode, S, T>;
