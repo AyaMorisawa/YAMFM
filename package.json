@@ -2,7 +2,7 @@
   "scripts": {
     "watch": "mocha -w -r ts-node/register --watch-extensions ts"
   },
-  "dependencies": {
+  "devDependencies": {
     "@types/mocha": "5.2.7",
     "@types/node": "12.7.5",
     "mocha": "6.2.0",
