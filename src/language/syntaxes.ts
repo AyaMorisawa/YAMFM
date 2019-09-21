@@ -39,7 +39,7 @@ export const primitives: Primitive[] = [
   T.primitive('inlineCode', P.regex(/^`([^`\n]+?)`/), (partialNode, [, code]) => {
     return Object.assign({}, partialNode, { code });
   }),
-  T.primitive('inlineMath', P.regex(/^\\\((.+?)\\\)/), (partialNode, [, formula]) => {
+  T.primitive('inlineMath', P.str('\\\(').then(P.any.until(P.str('\\\)'))).map(m => m.join('')), (partialNode, formula) => {
     return Object.assign({}, partialNode, { formula });
   }),
 ];
