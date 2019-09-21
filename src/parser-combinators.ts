@@ -15,10 +15,20 @@ type Failed = {
 
 type ParseResult<T> = Succeed<T> | Failed;
 
-export type Parser<T> = (source: Source) => ParseResult<T>;
+export class Parser<T> {
+  private parser: (source: Source) => ParseResult<T>;
+
+  constructor(parser: (source: Source) => ParseResult<T>) {
+    this.parser = parser;
+  }
+
+  parse(source: Source): ParseResult<T> {
+    return this.parser(source);
+  }
+}
 
 export function str(s: string): Parser<string> {
-  return (source: Source) => {
+  return new Parser(source => {
     if (source.text.substr(source.offset).startsWith(s)) {
       return {
         status: 'succeed',
@@ -30,11 +40,11 @@ export function str(s: string): Parser<string> {
         status: 'failed',
       };
     }
-  };
+  });
 }
 
 export function regex(r: RegExp): Parser<RegExpMatchArray> {
-  return (source: Source) => {
+  return new Parser(source => {
     const match = source.text.substr(source.offset).match(r);
     if (match !== null) {
       return {
@@ -47,5 +57,5 @@ export function regex(r: RegExp): Parser<RegExpMatchArray> {
         status: 'failed',
       };
     }
-  };
+  });
 }

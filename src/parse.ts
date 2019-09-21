@@ -18,7 +18,7 @@ function parseInline(source: string): N.MfmNode[] {
     if (!groupValueStack.empty()) {
       const groupValue = groupValueStack.top();
       const done = groupValue(({ g, openingValue }) => {
-        const res = g.closing({ text: source, offset });
+        const res = g.closing.parse({ text: source, offset });
         if (res.status === 'succeed') {
           groupValueStack.pop();
           const children = resultStack.pop().toArray();
@@ -35,7 +35,7 @@ function parseInline(source: string): N.MfmNode[] {
   function tryGroupOpenings() {
     for (const group of S.groups) {
       const done = group(g => {
-        const res = g.opening({ text: source, offset });
+        const res = g.opening.parse({ text: source, offset });
         if (res.status === 'succeed') {
           groupValueStack.push(cont => cont({ g, openingValue: res.value }));
           resultStack.push(new Stack());
@@ -50,7 +50,7 @@ function parseInline(source: string): N.MfmNode[] {
   function tryPrimitives() {
     for (const primitive of S.primitives) {
       const done = primitive(p => {
-        const res = p.parser({ text: source, offset });
+        const res = p.parser.parse({ text: source, offset });
         if (res.status === 'succeed') {
           const node = p.gen({ type: p.type }, res.value);
           resultStack.top().push(node);
