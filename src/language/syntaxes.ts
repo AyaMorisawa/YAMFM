@@ -29,6 +29,6 @@ export const primitives: Primitive[] = [
   P.str('*').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('*')).map(([text]) => N.italic([N.text(text)])),
   P.str('_').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('_')).map(([text]) => N.italic([N.text(text)])),
   P.str('`').then(P.regex(/^[^`\n]+/)).skip(P.str('`')).map(([code]) => N.inlineCode(code)),
-  P.str('\\\(').then(P.regex(/[^(\\\))]+/)).skip(P.str('\\\)')).map(([formula]) => N.inlineMath(formula)),
+  P.str('\\\(').then(P.regex(/^[^(\\\))]+/)).skip(P.str('\\\)')).map(([formula]) => N.inlineMath(formula)),
 ];
 
