@@ -3,7 +3,7 @@ import * as N from './nodes';
 import * as P from './parser-combinators';
 
 export function parse(source: string): N.RootNode {
-  return N.root(concatConsecutiveTextNodes(parseInline(source)));
+  return N.root(parseInline(source));
 }
 
 function parseInline(source: string): N.MfmNode[] {
@@ -11,7 +11,7 @@ function parseInline(source: string): N.MfmNode[] {
   resultStack.push(new Stack());
   let offset = 0;
   while (offset < source.length) tryPrimitives();
-  return resultStack.pop().toArray();
+  return concatConsecutiveTextNodes(resultStack.pop().toArray());
 
   function tryPrimitives() {
     const res = primitives.parse({ text: source, offset });
