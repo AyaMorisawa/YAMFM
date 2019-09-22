@@ -78,3 +78,15 @@ export function regex(r: RegExp): Parser<RegExpMatchArray> {
     }
   });
 }
+
+export function alt<S>(parsers: Parser<S>[]): Parser<S> {
+  return new Parser(source => {
+    for (const parser of parsers) {
+      const res = parser.parse(source);
+      if (res.status === 'succeed') {
+        return res;
+      }
+    }
+    return { status: 'failed' };
+  });
+}

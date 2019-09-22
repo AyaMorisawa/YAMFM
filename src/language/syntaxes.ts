@@ -22,12 +22,10 @@ export const groups: Group[] = [
   }),
 ];
 
-type Primitive = P.Parser<N.MfmNode>;
-
-export const primitives: Primitive[] = [
+export const primitives = P.alt<N.MfmNode>([
   P.regex(/^__([a-zA-Z0-9\s]+)__/).map(([, text]) => N.bold([N.text(text)])),
   P.regex(/^\*([a-zA-Z0-9\s]+)\*/).map(([, text]) => N.italic([N.text(text)])),
   P.regex(/^_([a-zA-Z0-9\s]+)_/).map(([, text]) => N.italic([N.text(text)])),
   P.regex(/^`([^\n]+?)`/).map(([, code]) => N.inlineCode(code)),
   P.regex(/^\\\((.+?)\\\)/).map(([, formula]) => N.inlineMath(formula)),
-];
+]);
