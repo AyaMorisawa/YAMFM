@@ -25,10 +25,10 @@ export const groups: Group[] = [
 type Primitive = P.Parser<N.MfmNode>;
 
 export const primitives: Primitive[] = [
-  P.str('__').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('__')).map(([text]) => N.bold([N.text(text)])),
-  P.str('*').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('*')).map(([text]) => N.italic([N.text(text)])),
-  P.str('_').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('_')).map(([text]) => N.italic([N.text(text)])),
-  P.str('`').then(P.regex(/^[^`\n]+/)).skip(P.str('`')).map(([code]) => N.inlineCode(code)),
-  P.str('\\\(').then(P.regex(/^.+?(?=\\\))/)).skip(P.str('\\\)')).map(([formula]) => N.inlineMath(formula)),
+  P.regex(/^__([a-zA-Z0-9\s]+)__/).map(([, text]) => N.bold([N.text(text)])),
+  P.regex(/^\*([a-zA-Z0-9\s]+)\*/).map(([, text]) => N.italic([N.text(text)])),
+  P.regex(/^_([a-zA-Z0-9\s]+)_/).map(([, text]) => N.italic([N.text(text)])),
+  P.regex(/^`([^\n]+?)`/).map(([, code]) => N.inlineCode(code)),
+  P.regex(/^\\\((.+?)\\\)/).map(([, formula]) => N.inlineMath(formula)),
 ];
 

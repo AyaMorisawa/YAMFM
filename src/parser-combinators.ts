@@ -26,38 +26,6 @@ export class Parser<T> {
     return this.parser(source);
   }
 
-  then<S>(nextParser: Parser<S>): Parser<S> {
-    return new Parser(source => {
-      const res1 = this.parse(source);
-      if (res1.status === 'succeed') {
-        const res2 = nextParser.parse({ text: source.text, offset: source.offset + res1.length });
-        if (res2.status === 'succeed') {
-          return { status: 'succeed', length: res1.length + res2.length, value: res2.value };
-        } else {
-          return { status: 'failed' };
-        }
-      } else {
-        return { status: 'failed' };
-      }
-    });
-  }
-
-  skip<S>(nextParser: Parser<S>): Parser<T> {
-    return new Parser(source => {
-      const res1 = this.parse(source);
-      if (res1.status === 'succeed') {
-        const res2 = nextParser.parse({ text: source.text, offset: source.offset + res1.length });
-        if (res2.status === 'succeed') {
-          return { status: 'succeed', length: res1.length + res2.length, value: res1.value };
-        } else {
-          return { status: 'failed' };
-        }
-      } else {
-        return { status: 'failed' };
-      }
-    });
-  }
-
   map<S>(f: (x: T) => S): Parser<S> {
     return new Parser(source => {
       const res = this.parse(source);
