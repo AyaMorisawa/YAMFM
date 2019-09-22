@@ -1,68 +1,58 @@
 import { Stack } from './stack';
-import * as S from './language/syntaxes';
-import * as N from './language/nodes';
+import * as N from './nodes';
+import * as P from './parser-combinators';
 
 export function parse(source: string): N.RootNode {
-  return { type: 'root', children: parseInline(source) };
+  return N.root(concatConsecutiveTextNodes(parseInline(source)));
 }
 
 function parseInline(source: string): N.MfmNode[] {
-  const groupValueStack = new Stack<<R>(cont: <S, T>(t: { g: S.GroupT<S, T>, openingValue?: S }) => R) => R>();
   const resultStack = new Stack<Stack<N.MfmNode>>();
   resultStack.push(new Stack());
   let offset = 0;
-  while (offset < source.length) [tryGroupClosing, tryGroupOpenings, tryPrimitives, tryText].find(f => f());
+  while (offset < source.length) tryPrimitives();
   return resultStack.pop().toArray();
 
-  function tryGroupClosing() {
-    if (!groupValueStack.empty()) {
-      const groupValue = groupValueStack.top();
-      const done = groupValue(({ g, openingValue }) => {
-        const res = g.closing.parse({ text: source, offset });
-        if (res.status === 'succeed') {
-          groupValueStack.pop();
-          const children = resultStack.pop().toArray();
-          const node = g.gen({ type: g.type, children }, [openingValue, res.value]);
-          resultStack.top().push(node);
-          offset += res.length;
-          return true;
-        }
-      });
-      if (done) return true;
-    }
-  }
-
-  function tryGroupOpenings() {
-    for (const group of S.groups) {
-      const done = group(g => {
-        const res = g.opening.parse({ text: source, offset });
-        if (res.status === 'succeed') {
-          groupValueStack.push(cont => cont({ g, openingValue: res.value }));
-          resultStack.push(new Stack());
-          offset += res.length;
-          return true;
-        }
-      });
-      if (done) return true;
-    }
-  }
-
   function tryPrimitives() {
-    const res = S.primitives.parse({ text: source, offset });
+    const res = primitives.parse({ text: source, offset });
     if (res.status === 'succeed') {
       resultStack.top().push(res.value);
       offset += res.length;
       return true;
     }
   }
+}
 
-  function tryText() {
-    const siblings = resultStack.top();
-    if (siblings.empty() || siblings.top().type !== 'text') {
-      siblings.push(N.text(''));
+const primitives: P.Parser<N.MfmNode> = P.alt<N.MfmNode>([
+  () => P.str('<jump>').then(primitives.nonGreedyMany1(P.str('</jump>'))).map(concatConsecutiveTextNodes).map(N.jump),
+  () => P.str('***').then(primitives.nonGreedyMany1(P.str('***'))).map(concatConsecutiveTextNodes).map(N.big),
+  () => P.str('**').then(primitives.nonGreedyMany1(P.str('**'))).map(concatConsecutiveTextNodes).map(N.bold),
+  () => P.str('<i>').then(primitives.nonGreedyMany1(P.str('</i>'))).map(concatConsecutiveTextNodes).map(N.italic),
+  () => P.str('<small>').then(primitives.nonGreedyMany1(P.str('</small>'))).map(concatConsecutiveTextNodes).map(N.small),
+  () => P.str('<motion>').then(primitives.nonGreedyMany1(P.str('</motion>'))).map(concatConsecutiveTextNodes).map(N.motion),
+  () => P.str('(((').then(primitives.nonGreedyMany1(P.str(')))'))).map(concatConsecutiveTextNodes).map(N.motion),
+  () => P.str('~~').then(primitives.nonGreedyMany1(P.str('~~'))).map(concatConsecutiveTextNodes).map(N.strike),
+  () => P.str('<flip>').then(primitives.nonGreedyMany1(P.str('</flip>'))).map(concatConsecutiveTextNodes).map(N.flip),
+  () => P.seq([P.regex(/^<spin\s?([a-z]*)>/), primitives.nonGreedyMany1(P.str('</spin>'))]).map(([[, attr], children]) => N.spin(attr, concatConsecutiveTextNodes(children))),
+  () => P.regex(/^__([a-zA-Z0-9\s]+)__/).map(m => m[1]).map(text => [N.text(text)]).map(N.bold),
+  () => P.regex(/^\*([a-zA-Z0-9\s]+)\*/).map(m => m[1]).map(text => [N.text(text)]).map(N.italic),
+  () => P.regex(/^_([a-zA-Z0-9\s]+)_/).map(m => m[1]).map(text => [N.text(text)]).map(N.italic),
+  () => P.regex(/^`([^\n]+?)`/).map(m => m[1]).map(N.inlineCode),
+  () => P.regex(/^\\\((.+?)\\\)/).map(m => m[1]).map(N.inlineMath),
+  () => P.any.map(N.text),
+].map(P.lazy));
+
+function concatConsecutiveTextNodes(nodes: N.MfmNode[]): N.MfmNode[] {
+  const newNodes = new Stack<N.MfmNode>();
+  for (const node of nodes) {
+    if (node.type === 'text') {
+      if (newNodes.empty() || newNodes.top().type !== 'text') {
+        newNodes.push(N.text(''));
+      }
+      (newNodes.top() as N.TextNode).text += node.text;
+    } else {
+      newNodes.push(node);
     }
-    (siblings.top() as N.TextNode).text += source[offset];
-    offset++;
-    return true;
   }
+  return newNodes.toArray();
 }

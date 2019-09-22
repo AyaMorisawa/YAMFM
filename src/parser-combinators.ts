@@ -26,6 +26,60 @@ export class Parser<T> {
     return this.parser(source);
   }
 
+  then<S>(nextParser: Parser<S>): Parser<S> {
+    return new Parser(source => {
+      const res1 = this.parse(source);
+      if (res1.status === 'succeed') {
+        const res2 = nextParser.parse({ text: source.text, offset: source.offset + res1.length });
+        if (res2.status === 'succeed') {
+          return { status: 'succeed', length: res1.length + res2.length, value: res2.value };
+        } else {
+          return { status: 'failed' };
+        }
+      } else {
+        return { status: 'failed' };
+      }
+    });
+  }
+
+  skip<S>(nextParser: Parser<S>): Parser<T> {
+    return new Parser(source => {
+      const res1 = this.parse(source);
+      if (res1.status === 'succeed') {
+        const res2 = nextParser.parse({ text: source.text, offset: source.offset + res1.length });
+        if (res2.status === 'succeed') {
+          return { status: 'succeed', length: res1.length + res2.length, value: res1.value };
+        } else {
+          return { status: 'failed' };
+        }
+      } else {
+        return { status: 'failed' };
+      }
+    });
+  }
+
+  nonGreedyMany1<S>(nextParser: Parser<S>): Parser<T[]> {
+    return new Parser(({ text, offset }) => {
+      const values: T[] = [];
+      let length = 0;
+      while (offset < text.length) {
+        const res1 = this.parse({ text, offset: offset + length });
+        if (res1.status === 'succeed') {
+          length += res1.length;
+          values.push(res1.value);
+          const res2 = nextParser.parse({ text, offset: offset + length });
+          if (res2.status === 'succeed') {
+            length += res2.length;
+            return { status: 'succeed', length, value: values };
+          }
+        } else {
+          return { status: 'failed' };
+        }
+      }
+      return { status: 'failed' };
+    });
+  }
+
   map<S>(f: (x: T) => S): Parser<S> {
     return new Parser(source => {
       const res = this.parse(source);
@@ -88,5 +142,31 @@ export function alt<S>(parsers: Parser<S>[]): Parser<S> {
       }
     }
     return { status: 'failed' };
+  });
+}
+
+export function seq<S1, S2>(parsers: [Parser<S1>, Parser<S2>]): Parser<[S1, S2]>;
+export function seq<S>(parsers: Parser<S>[]): Parser<S[]> {
+  return new Parser(({ text, offset }) => {
+    const values: S[] = []
+    let length = 0;
+    for (const parser of parsers) {
+      const res = parser.parse({ text, offset: offset + length });
+      if (res.status === 'succeed') {
+        length += res.length;
+        values.push(res.value);
+      } else {
+        return res;
+      }
+    }
+    return { status: 'succeed', length, value: values };
+  });
+}
+
+export function lazy<S>(lazyParser: () => Parser<S>): Parser<S> {
+  let parser = null;
+  return new Parser(source => {
+    if (parser === null) parser = lazyParser();
+    return parser.parse(source);
   });
 }
