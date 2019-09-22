@@ -50,3 +50,19 @@ export type MfmNode
 export function text(text: string): TextNode {
   return { type: 'text', text };
 }
+
+export function bold(children: MfmNode[]): BoldNode {
+  return { type: 'bold', children };
+}
+
+export function italic(children: MfmNode[]): ItalicNode {
+  return { type: 'italic', children };
+}
+
+export function inlineCode(code: string): InlineCodeNode {
+  return { type: 'inlineCode', code };
+}
+
+export function inlineMath(formula: string): InlineMathNode {
+  return { type: 'inlineMath', formula };
+}

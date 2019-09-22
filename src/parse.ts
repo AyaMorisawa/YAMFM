@@ -49,16 +49,12 @@ function parseInline(source: string): N.MfmNode[] {
 
   function tryPrimitives() {
     for (const primitive of S.primitives) {
-      const done = primitive(p => {
-        const res = p.parser.parse({ text: source, offset });
-        if (res.status === 'succeed') {
-          const node = p.gen({ type: p.type }, res.value);
-          resultStack.top().push(node);
-          offset += res.length;
-          return true;
-        }
-      });
-      if (done) return true;
+      const res = primitive.parse({ text: source, offset });
+      if (res.status === 'succeed') {
+        resultStack.top().push(res.value);
+        offset += res.length;
+        return true;
+      }
     }
   }
 

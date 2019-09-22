@@ -22,24 +22,13 @@ export const groups: Group[] = [
   }),
 ];
 
-const _primitiveType = false ? (null as N.PrimitiveNode).type : null;
-
-type Primitive = <R>(cont: <S>(t: T.Primitive<typeof _primitiveType, N.MfmNode, S>) => R) => R
+type Primitive = P.Parser<N.MfmNode>;
 
 export const primitives: Primitive[] = [
-  T.primitive('bold', P.regex(/^__([a-zA-Z0-9\s]+?)__/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [N.text(text)] });
-  }),
-  T.primitive('italic', P.regex(/^\*([a-zA-Z0-9\s]+?)\*/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [N.text(text)] });
-  }),
-  T.primitive('italic', P.regex(/^_([a-zA-Z0-9\s]+?)_/), (partialNode, [, text]) => {
-    return Object.assign({}, partialNode, { children: [N.text(text)] });
-  }),
-  T.primitive('inlineCode', P.regex(/^`([^`\n]+?)`/), (partialNode, [, code]) => {
-    return Object.assign({}, partialNode, { code });
-  }),
-  T.primitive('inlineMath', P.str('\\\(').then(P.any.until(P.str('\\\)'))).map(m => m.join('')), (partialNode, formula) => {
-    return Object.assign({}, partialNode, { formula });
-  }),
+  P.str('__').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('__')).map(([text]) => N.bold([N.text(text)])),
+  P.str('*').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('*')).map(([text]) => N.italic([N.text(text)])),
+  P.str('_').then(P.regex(/^[a-zA-Z0-9\s]+/)).skip(P.str('_')).map(([text]) => N.italic([N.text(text)])),
+  P.str('`').then(P.regex(/^[^`\n]+/)).skip(P.str('`')).map(([code]) => N.inlineCode(code)),
+  P.str('\\\(').then(P.regex(/[^(\\\))]+/)).skip(P.str('\\\)')).map(([formula]) => N.inlineMath(formula)),
 ];
+
