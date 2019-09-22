@@ -76,8 +76,10 @@ export function inlineMath(formula: string): InlineMathNode {
   return { type: 'inlineMath', formula };
 }
 
-export type GroupNode
-  = JumpNode
+export type MfmNode
+  = RootNode
+  | TextNode
+  | JumpNode
   | BigNode
   | BoldNode
   | ItalicNode
@@ -85,16 +87,6 @@ export type GroupNode
   | MotionNode
   | StrikeNode
   | FlipNode
-  | SpinNode;
-
-type PrimitiveNode
-  = BoldNode
-  | ItalicNode
+  | SpinNode
   | InlineCodeNode
   | InlineMathNode;
-
-export type MfmNode
-  = RootNode
-  | TextNode
-  | GroupNode
-  | PrimitiveNode;
