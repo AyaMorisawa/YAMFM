@@ -35,7 +35,7 @@ export type GroupNode
   | FlipNode
   | SpinNode;
 
-export type PrimitiveNode
+type PrimitiveNode
   = BoldNode
   | ItalicNode
   | InlineCodeNode
