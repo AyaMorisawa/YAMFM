@@ -58,6 +58,28 @@ export class Parser<T> {
     });
   }
 
+  until<S>(nextParser: Parser<S>): Parser<T[]> {
+    return new Parser(({ text, offset }) => {
+      const values: T[] = [];
+      let length = 0;
+      while (offset < text.length) {
+        const res1 = this.parse({ text, offset: offset + length });
+        if (res1.status === 'succeed') {
+          length += res1.length;
+          values.push(res1.value);
+          const res2 = nextParser.parse({ text, offset: offset + length });
+          if (res2.status === 'succeed') {
+            length += res2.length;
+            return { status: 'succeed', length, value: values };
+          }
+        } else {
+          return { status: 'failed' };
+        }
+      }
+      return { status: 'failed' };
+    });
+  }
+
   map<S>(f: (x: T) => S): Parser<S> {
     return new Parser(source => {
       const res = this.parse(source);
