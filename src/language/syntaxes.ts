@@ -31,4 +31,3 @@ export const primitives: Primitive[] = [
   P.regex(/^`([^\n]+?)`/).map(([, code]) => N.inlineCode(code)),
   P.regex(/^\\\((.+?)\\\)/).map(([, formula]) => N.inlineMath(formula)),
 ];
-
