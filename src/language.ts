@@ -2,10 +2,6 @@ import { Stack } from './stack';
 import * as N from './nodes';
 import * as P from './parser-combinators';
 
-export function root(source: string): N.RootNode {
-  return (inline.many().map(concatConsecutiveTextNodes).map(N.root).parse({ text: source, offset: 0 }) as P.Succeed<N.RootNode>).value;
-}
-
 const inline: P.Parser<N.MfmNode> = P.lazy(() => {
   const inlines = next => inline.nonGreedyMany1(next).map(concatConsecutiveTextNodes);
 
@@ -28,6 +24,8 @@ const inline: P.Parser<N.MfmNode> = P.lazy(() => {
     P.any.map(N.text),
   ]);
 });
+
+export const root = inline.many().map(concatConsecutiveTextNodes).map(N.root);
 
 function concatConsecutiveTextNodes(nodes: N.MfmNode[]): N.MfmNode[] {
   const newNodes = new Stack<N.MfmNode>();
