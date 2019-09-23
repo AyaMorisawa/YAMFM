@@ -8,6 +8,12 @@ describe('parse', () => {
     });
   });
 
+  it('emojiName', () => {
+    assert.deepStrictEqual(parse(':heart:'), {
+      type: 'root', children: [{ type: 'emojiName', name: 'heart' }]
+    });
+  });
+
   it('text', () => {
     assert.deepStrictEqual(parse('aa'), {
       type: 'root', children: [{ type: 'text', text: 'aa' }]

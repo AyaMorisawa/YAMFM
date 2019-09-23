@@ -21,6 +21,7 @@ const inline: P.Parser<N.MfmNode> = P.lazy(() => {
     P.regex(/^_([a-zA-Z0-9\s]+)_/).map(m => m[1]).map(text => [N.text(text)]).map(N.italic),
     P.regex(/^`([^\n]+?)`/).map(m => m[1]).map(N.inlineCode),
     P.regex(/^\\\((.+?)\\\)/).map(m => m[1]).map(N.inlineMath),
+    P.regex(/^:([a-zA-Z0-9_+-]+):/).map(m => m[1]).map(N.emojiName),
     P.any.map(N.text),
   ]);
 });

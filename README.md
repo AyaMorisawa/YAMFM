@@ -43,7 +43,6 @@ See test code.
 * [ ] hashtag
 * [ ] url
 * [ ] link
-* [ ] emoji
-  * [ ] name
-  * [ ] code
+* [x] emojiName
+* [ ] emojiCode
 * [x] text

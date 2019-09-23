@@ -4,6 +4,12 @@ export function root(children: MfmNode[]): RootNode {
   return { type: 'root', children };
 }
 
+export type EmojiNameNode = { type: 'emojiName', name: string };
+
+export function emojiName(name: string): EmojiNameNode {
+  return { type: 'emojiName', name };
+}
+
 export type TextNode = { type: 'text', text: string };
 
 export function text(text: string): TextNode {
@@ -78,6 +84,7 @@ export function inlineMath(formula: string): InlineMathNode {
 
 export type MfmNode
   = RootNode
+  | EmojiNameNode
   | TextNode
   | JumpNode
   | BigNode
