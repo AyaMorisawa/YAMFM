@@ -9,9 +9,15 @@ export type Succeed<T> = {
   length: number,
 };
 
+function succeed<T>(length: number, value: T): Succeed<T> {
+  return { status: 'succeed', value, length };
+}
+
 type Failed = {
   status: 'failed',
 };
+
+const failed: Failed = { status: 'failed' };
 
 type ParseResult<T> = Succeed<T> | Failed;
 
@@ -32,12 +38,12 @@ export class Parser<T> {
       if (res1.status === 'succeed') {
         const res2 = nextParser.parse({ text: source.text, offset: source.offset + res1.length });
         if (res2.status === 'succeed') {
-          return { status: 'succeed', length: res1.length + res2.length, value: res2.value };
+          return succeed(res1.length + res2.length, res2.value);
         } else {
-          return { status: 'failed' };
+          return failed;
         }
       } else {
-        return { status: 'failed' };
+        return failed;
       }
     });
   }
@@ -48,12 +54,12 @@ export class Parser<T> {
       if (res1.status === 'succeed') {
         const res2 = nextParser.parse({ text: source.text, offset: source.offset + res1.length });
         if (res2.status === 'succeed') {
-          return { status: 'succeed', length: res1.length + res2.length, value: res1.value };
+          return succeed(res1.length + res2.length, res1.value);
         } else {
-          return { status: 'failed' };
+          return failed;
         }
       } else {
-        return { status: 'failed' };
+        return failed;
       }
     });
   }
@@ -68,10 +74,10 @@ export class Parser<T> {
           length += res.length;
           values.push(res.value);
         } else {
-          return { status: 'succeed', length, value: values };
+          return succeed(length, values);
         }
       }
-      return { status: 'succeed', length, value: values };
+      return succeed(length, values);
     });
   }
 
@@ -87,13 +93,13 @@ export class Parser<T> {
           const res2 = nextParser.parse({ text, offset: offset + length });
           if (res2.status === 'succeed') {
             length += res2.length;
-            return { status: 'succeed', length, value: values };
+            return succeed(length, values);
           }
         } else {
-          return { status: 'failed' };
+          return failed;
         }
       }
-      return { status: 'failed' };
+      return failed;
     });
   }
 
@@ -101,9 +107,9 @@ export class Parser<T> {
     return new Parser(source => {
       const res = this.parse(source);
       if (res.status === 'succeed') {
-        return { status: res.status, length: res.length, value: f(res.value) };
+        return succeed(res.length, f(res.value));
       } else {
-        return { status: res.status };
+        return failed;
       }
     });
   }
@@ -120,15 +126,9 @@ export const any: Parser<string> = new Parser(source => {
 export function str(s: string): Parser<string> {
   return new Parser(source => {
     if (source.text.substr(source.offset).startsWith(s)) {
-      return {
-        status: 'succeed',
-        value: s,
-        length: s.length,
-      };
+      return succeed(s.length, s);
     } else {
-      return {
-        status: 'failed',
-      };
+      return failed;
     }
   });
 }
@@ -137,15 +137,9 @@ export function regex(r: RegExp): Parser<RegExpMatchArray> {
   return new Parser(source => {
     const match = source.text.substr(source.offset).match(r);
     if (match !== null) {
-      return {
-        status: 'succeed',
-        value: match,
-        length: match[0].length,
-      };
+      return succeed(match[0].length, match);
     } else {
-      return {
-        status: 'failed',
-      };
+      return failed;
     }
   });
 }
@@ -158,7 +152,7 @@ export function alt<S>(parsers: Parser<S>[]): Parser<S> {
         return res;
       }
     }
-    return { status: 'failed' };
+    return failed;
   });
 }
 
@@ -176,7 +170,7 @@ export function seq<S>(parsers: Parser<S>[]): Parser<S[]> {
         return res;
       }
     }
-    return { status: 'succeed', length, value: values };
+    return succeed(length, values);
   });
 }
 
