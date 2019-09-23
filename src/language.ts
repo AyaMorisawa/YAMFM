@@ -3,20 +3,7 @@ import * as N from './nodes';
 import * as P from './parser-combinators';
 
 export function root(source: string): N.RootNode {
-  const resultStack = new Stack<Stack<N.MfmNode>>();
-  resultStack.push(new Stack());
-  let offset = 0;
-  while (offset < source.length) tryPrimitives();
-  return N.root(concatConsecutiveTextNodes(resultStack.pop().toArray()));
-
-  function tryPrimitives() {
-    const res = inline.parse({ text: source, offset });
-    if (res.status === 'succeed') {
-      resultStack.top().push(res.value);
-      offset += res.length;
-      return true;
-    }
-  }
+  return (inline.many().map(concatConsecutiveTextNodes).map(N.root).parse({ text: source, offset: 0 }) as P.Succeed<N.RootNode>).value;
 }
 
 const inline: P.Parser<N.MfmNode> = P.lazy(() => {

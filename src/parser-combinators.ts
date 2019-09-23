@@ -3,7 +3,7 @@ type Source = {
   offset: number,
 };
 
-type Succeed<T> = {
+export type Succeed<T> = {
   status: 'succeed',
   value: T,
   length: number,
@@ -55,6 +55,23 @@ export class Parser<T> {
       } else {
         return { status: 'failed' };
       }
+    });
+  }
+
+  many(): Parser<T[]> {
+    return new Parser(({ text, offset }) => {
+      const values: T[] = [];
+      let length = 0;
+      while (offset + length < text.length) {
+        const res = this.parse({ text, offset: offset + length });
+        if (res.status === 'succeed') {
+          length += res.length;
+          values.push(res.value);
+        } else {
+          return { status: 'succeed', length, value: values };
+        }
+      }
+      return { status: 'succeed', length, value: values };
     });
   }
 
