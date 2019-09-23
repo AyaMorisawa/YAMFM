@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { parse } from '../src/parse';
+import { parse } from '../src';
 
 describe('parse', () => {
   it('empty', () => {

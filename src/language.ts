@@ -2,11 +2,7 @@ import { Stack } from './stack';
 import * as N from './nodes';
 import * as P from './parser-combinators';
 
-export function parse(source: string): N.RootNode {
-  return root(source);
-}
-
-function root(source: string): N.RootNode {
+export function root(source: string): N.RootNode {
   const resultStack = new Stack<Stack<N.MfmNode>>();
   resultStack.push(new Stack());
   let offset = 0;
