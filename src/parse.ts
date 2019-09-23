@@ -3,15 +3,15 @@ import * as N from './nodes';
 import * as P from './parser-combinators';
 
 export function parse(source: string): N.RootNode {
-  return N.root(parseInline(source));
+  return root(source);
 }
 
-function parseInline(source: string): N.MfmNode[] {
+function root(source: string): N.RootNode {
   const resultStack = new Stack<Stack<N.MfmNode>>();
   resultStack.push(new Stack());
   let offset = 0;
   while (offset < source.length) tryPrimitives();
-  return concatConsecutiveTextNodes(resultStack.pop().toArray());
+  return N.root(concatConsecutiveTextNodes(resultStack.pop().toArray()));
 
   function tryPrimitives() {
     const res = inline.parse({ text: source, offset });
