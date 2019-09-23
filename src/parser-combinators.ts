@@ -79,7 +79,7 @@ export class Parser<T> {
     return new Parser(({ text, offset }) => {
       const values: T[] = [];
       let length = 0;
-      while (offset < text.length) {
+      while (offset + length < text.length) {
         const res1 = this.parse({ text, offset: offset + length });
         if (res1.status === 'succeed') {
           length += res1.length;
